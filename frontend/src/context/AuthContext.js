@@ -1,32 +1,63 @@
 // frontend/src/context/AuthContext.js
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Using useNavigate for redirection
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // npm install jwt-decode
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
-    const [isAuthenticated, setIsAuthenticated] = useState(!!token);
-    const [user, setUser] = useState(null); // You might decode user from token later
+    const [isAuthenticated, setIsAuthenticated] = useState(false); // Default to false
+    const [user, setUser] = useState(null); // Stores decoded user info
 
     const navigate = useNavigate();
 
-    // Effect to update isAuthenticated when token changes
-    useEffect(() => {
-        setIsAuthenticated(!!token);
-        if (!token) {
+    // Function to decode token and set user/auth status
+    const updateAuthStatus = useCallback((jwtToken) => {
+        if (jwtToken) {
+            try {
+                const decoded = jwtDecode(jwtToken);
+                // Check if token is expired
+                if (decoded.exp * 1000 < Date.now()) {
+                    // Token expired
+                    localStorage.removeItem('token');
+                    setToken(null);
+                    setIsAuthenticated(false);
+                    setUser(null);
+                    console.log('Token expired, logged out.');
+                    return false; // Indicate token was invalid/expired
+                }
+                setToken(jwtToken);
+                setIsAuthenticated(true);
+                setUser(decoded.user); // Store the user object from the token payload
+                return true; // Indicate token was valid
+            } catch (error) {
+                console.error("Invalid token:", error);
+                localStorage.removeItem('token');
+                setToken(null);
+                setIsAuthenticated(false);
+                setUser(null);
+                return false; // Indicate token was invalid
+            }
+        } else {
+            localStorage.removeItem('token');
+            setToken(null);
+            setIsAuthenticated(false);
             setUser(null);
+            return false; // Indicate no token
         }
-        // In a real app, you'd decode the token here to get user info
-        // For simplicity, we're just checking token presence
-    }, [token]);
+    }, []);
+
+    // Effect to run once on component mount to check initial token
+    useEffect(() => {
+        updateAuthStatus(localStorage.getItem('token'));
+    }, [updateAuthStatus]);
 
     const login = (jwtToken) => {
         localStorage.setItem('token', jwtToken);
-        setToken(jwtToken);
-        setIsAuthenticated(true);
-        // Optionally decode user info here from the token and set `user` state
-        navigate('/home'); // Redirect to home page after login
+        if (updateAuthStatus(jwtToken)) { // Only navigate if token is valid
+            navigate('/groups'); // Redirect to groups page after login
+        }
     };
 
     const logout = () => {

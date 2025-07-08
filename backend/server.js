@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/auth'); // Import auth routes
+const groupRoutes = require('./routes/group'); // New: Import group routes
+const expenseRoutes = require('./routes/expense'); // New: Import expense routes
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +30,8 @@ connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/groups', groupRoutes); // New: Use group routes
+app.use('/api/expenses', expenseRoutes); // New: Use expense routes
 
 app.get('/', (req, res) => {
     res.send('API is running...');
