@@ -30,7 +30,7 @@ const Login = () => {
         }
 
         try {
-            const res = await axios.post('https://splitwise-backend-vtqr.onrender.com//api/auth/login', formData);
+            const res = await axios.post('https://splitwise-backend-vtqr.onrender.com/api/auth/login', formData);
             setMessage(res.data.msg);
             setMessageType('success');
             login(res.data.token); // Use the login function from context
