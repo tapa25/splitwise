@@ -54,7 +54,7 @@ const AddExpenseForm = ({ groupId, groupMembers, onExpenseAdded }) => {
                 paidByUserId
             };
 
-            const res = await axios.post('https://splitwise-backend-vtqr.onrender.com//api/expenses/add', expenseData, config);
+            const res = await axios.post('https://splitwise-backend-vtqr.onrender.com/api/expenses/add', expenseData, config);
             setMessage('Expense added successfully!');
             setMessageType('success');
             setFormData({
