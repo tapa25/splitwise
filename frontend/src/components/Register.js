@@ -35,7 +35,7 @@ const Register = () => {
         }
 
         try {
-            const res = await axios.post('https://splitwise-backend-vtqr.onrender.com//api/auth/register', formData);
+            const res = await axios.post('https://splitwise-backend-vtqr.onrender.com/api/auth/register', formData);
             setMessage(res.data.msg);
             setMessageType('success');
             // Optionally, you might log the user in immediately after registration
