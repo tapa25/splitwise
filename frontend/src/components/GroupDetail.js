@@ -26,10 +26,10 @@ const GroupDetail = () => {
                     'x-auth-token': token
                 }
             };
-            const groupRes = await axios.get(`https://splitwise-backend-vtqr.onrender.com//groups/${groupId}`, config);
+            const groupRes = await axios.get(`https://splitwise-backend-vtqr.onrender.com/groups/${groupId}`, config);
             setGroup(groupRes.data);
 
-            const expensesRes = await axios.get(`https://splitwise-backend-vtqr.onrender.com//api/expenses/group/${groupId}`, config);
+            const expensesRes = await axios.get(`https://splitwise-backend-vtqr.onrender.com/api/expenses/group/${groupId}`, config);
             setExpenses(expensesRes.data);
 
         } catch (err) {
