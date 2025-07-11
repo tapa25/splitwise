@@ -19,7 +19,7 @@ const GroupList = () => {
                         'x-auth-token': token
                     }
                 };
-                const res = await axios.get('http://localhost:5000/api/groups', config);
+                const res = await axios.get('https://splitwise-backend-vtqr.onrender.com//api/groups', config);
                 setGroups(res.data);
             } catch (err) {
                 console.error('Error fetching groups:', err.response ? err.response.data : err.message);
